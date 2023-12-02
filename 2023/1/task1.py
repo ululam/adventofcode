@@ -4,28 +4,21 @@ self_digits = {str(v): v for v in digits.values()}
 digits = dict(list(digits.items()) + list(self_digits.items()))
 
 
+def _min_index(s, k):
+    i = s.find(k)
+    return i if i >= 0 else 100_000
+
+
 def find_left(s: str):
-    index, digit = 100_000, 0
-    for k, v in digits.items():
-        i = s.find(k)
-        if -1 < i < index:
-            digit = v
-            index = i
-    return digit
+    return min([(_min_index(s, k), v) for k, v in digits.items()], key=lambda t: t[0])[1]
 
 
 def find_right(s: str):
-    index, digit = -1, 0
-    for k, v in digits.items():
-        i = s.rfind(k)
-        if i > index:
-            digit = v
-            index = i
-    return digit
+    return max([(s.rfind(k), v) for k, v in digits.items()], key=lambda t: t[0])[1]
 
 
 summa = 0
-with open("1/1.txt") as file_in:
+with open("example1.2.txt") as file_in:
     for line in file_in:
         summa += 10 * find_left(line) + find_right(line)
 
