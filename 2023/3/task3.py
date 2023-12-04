@@ -7,7 +7,8 @@
 # Walk until the EoL
 # (2) Essentially similar approach. but check numbers above, below and around
 #
-# Note: There are negative numbers. But all 5 of them are not "parts", so I removed logic dealing with negatives
+# Note: There are 5 negative numbers. But they are counted as positive "part" number indicated by a "-" sign,
+# so I removed all the logic to deal with negative numbers
 
 def collect_line_numbers(line: str) -> list((int, int, int)):
     res, poses, digits = [], [], []
