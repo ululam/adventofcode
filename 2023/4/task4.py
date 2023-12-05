@@ -24,7 +24,7 @@ def part2(f):
             bonuses[card+i+1] += cards_number
     print(cards_sum)
 
-# with open("test4.txt") as f:
+# with open("test5.txt") as f:
 with open("4.input") as f:
     # part1(f)
     part2(f)
