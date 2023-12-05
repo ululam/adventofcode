@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 def to_numbers(s: str) -> list[int]:
     return [int(n) for n in s.strip().split(" ") if n]
 
@@ -16,6 +14,7 @@ def part1(f):
     print(sum([get_line_points(line.strip()) for line in f]))
 
 def part2(f):
+    from collections import defaultdict
     bonuses, cards_sum = defaultdict(int), 0
     for card, line in enumerate(f, 1):
         cards_number = bonuses[card] + 1
@@ -27,4 +26,5 @@ def part2(f):
 
 # with open("test4.txt") as f:
 with open("4.input") as f:
+    # part1(f)
     part2(f)
