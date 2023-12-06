@@ -3,7 +3,7 @@ from math import sqrt
 def find_best_times(T, dist):
     sqrt_d = sqrt(T * T - 4 * dist)
     t1, t2 = round(T - sqrt_d) >> 1, round(T + sqrt_d) >> 1
-    t1 += 1 if not check(t1, T, dist) else 0  # We need to check real boundary, as we operate INTs, not real numbers
+    t1 += 1 if not check(t1, T, dist) else 0  # We need to check real boundary
     t2 -= 1 if not check(t2, T, dist) else 0
     return t2 - t1 + 1
 
