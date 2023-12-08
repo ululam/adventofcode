@@ -18,7 +18,8 @@ def solve(f):
     counters = []
     for a_node in a_nodes:
         counter, dir_index = 0, 0
-        while not a_node.endswith("Z"):
+        # while a_node != "ZZZ":                # Part 1
+        while not a_node.endswith("Z"):         # Part 2
             direct = directions[dir_index]
             a_node = name_nodes[a_node].left if direct == 'L' else name_nodes[a_node].right
             dir_index += 1 if dir_index < len(directions)-1 else -dir_index
