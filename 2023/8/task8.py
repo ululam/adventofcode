@@ -27,9 +27,6 @@ def solve(f):
     from math import lcm
     print(lcm(*counters))
 
-def is_over(nodes: list[str]) -> bool:
-    return len([n for n in nodes if not n.endswith("Z")]) == 0
-
 with open("8.input") as f:
 # with open("test8.txt") as f:
 # with open("test8.1.txt") as f:
