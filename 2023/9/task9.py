@@ -1,7 +1,7 @@
 def next_number(numbers):
     return numbers[-1] + sum(solve_and_collect(numbers, -1))
 
-def next_number2(numbers):
+def prev_number(numbers):
     first_numbers, diff = solve_and_collect(numbers, 0), 0
     for i in range(len(first_numbers) - 1, -1, -1):
         diff = first_numbers[i] - diff
@@ -15,7 +15,7 @@ def solve_and_collect(numbers, index):
     return edge_numbers
 
 def solve(f, part=1):
-    reduce_func = next_number if part == 1 else next_number2
+    reduce_func = next_number if part == 1 else prev_number
     answer = sum(reduce_func(numbers) for numbers in [[int(n) for n in line.split()] for line in f])
     print(answer)
 
