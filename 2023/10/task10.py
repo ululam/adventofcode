@@ -75,7 +75,7 @@ class Solution:
         def fill(row, col):
             matrix[row][col] = OTHER
 
-            for dr, dc in [UP, DOWN, LEFT, RIGHT]:
+            for dr, dc in DIRS:
                 if self.part2_can_move_to(matrix, row + dr, col + dc):
                     fill(row + dr, col + dc)
 
@@ -160,8 +160,7 @@ class Solution:
                 self.unset_if_inner(matrix, r, c, LEFT_SIDES[UP])
 
     def unset_if_inner(self, matrix, row, col, move):
-        row = row + move[0]
-        col = col + move[1]
+        row, col = row + move[0], col + move[1]
         if matrix[row][col] == INNER:
             matrix[row][col] = FAILED_INNER
 
@@ -170,7 +169,7 @@ class Solution:
                and matrix[row][col] != BORDER and matrix[row][col] != OTHER
 
     def find_first_cell_to_move(self, matrix, row_start, col_start):
-        for dr, dc in reversed([RIGHT, LEFT, DOWN, UP]):
+        for dr, dc in DIRS:
             if self.can_move_to(matrix, row_start + dr, col_start + dc):
                 return row_start + dr, col_start + dc
 
