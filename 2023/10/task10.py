@@ -127,8 +127,11 @@ class Solution:
 
     def mark_external(self, matrix, next_cell, prev_cell):
         r, c = next_cell
+        # We just know that the maze is several cells away from all frontiers.
+        # That could be done more correct if checking corner case in each if, but its too much of cognitive complexity
         if r < 2 or r > len(matrix) - 2 or c < 2 or c > len(matrix[0]) - 2:
             return
+
         move = (r - prev_cell[0], c - prev_cell[1])
         self.unset_if_inner(matrix, r, c, LEFT_SIDES[move])
         if move == UP:
