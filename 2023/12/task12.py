@@ -6,11 +6,10 @@ def solve_line(s: str, factor) -> int:
     counts = [int(c) for c in counts.split(",")]
     pattern = "?".join([pattern] * factor)
     counts = counts * factor
-    return solve_pattern2(list(pattern), counts)
-
+    return solve_pattern(list(pattern), counts)
 
 cache = {}
-def solve_pattern2(pattern: list, counts: list[int]) -> int:
+def solve_pattern(pattern: list, counts: list[int]) -> int:
     a_key = "".join(pattern) + "__".join([str(c) for c in counts])
     if a_key in cache:
         return cache[a_key]
@@ -44,12 +43,11 @@ def solve_pattern2(pattern: list, counts: list[int]) -> int:
             res = 0
             for c in chars:
                 pattern[i] = c
-                res += solve_pattern2(pattern[i:], counts)
+                res += solve_pattern(pattern[i:], counts)
             return cache_and_return(a_key, res)
 
     res = 0 if counts and sum(counts) > 0 else 1
     return cache_and_return(a_key, res)
-
 
 def cache_and_return(key: str, value: int) -> int:
     cache[key] = value
