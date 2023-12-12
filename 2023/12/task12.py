@@ -16,9 +16,7 @@ def solve_pattern(pattern: list, counts: list[int]) -> int:
 
     group_started = False
     pattern = pattern[:]
-    counts = counts[:]
-    if counts and counts[0] == 0:
-        counts = counts[1:]
+    counts = counts[1:] if counts and counts[0] == 0 else counts[:]
 
     for i in range(len(pattern)):
         if pattern[i] == "#":
