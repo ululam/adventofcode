@@ -50,7 +50,7 @@ with open("14.input") as f:
             prev_i = iter_hashes[h]
             if not fast_forwarded:
                 cycle = i - prev_i
-                skip_cycles = round((iterations - prev_i - cycle) // cycle)
+                skip_cycles = (iterations - prev_i - cycle) // cycle
                 i = prev_i + skip_cycles * cycle
                 fast_forwarded = True
                 continue
