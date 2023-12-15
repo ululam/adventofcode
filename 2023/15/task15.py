@@ -12,19 +12,13 @@ class FancyMap:
         if "=" in operation:
             # Add
             label, focal_len = operation.split("=")
-            box_number, focal_len = fancy_hash(label), int(focal_len)
-            self.put(box_number, label, focal_len)
+            box, focal_len = fancy_hash(label), int(focal_len)
+            self.boxes[box].put(label, focal_len)
         else:
             # Remove
             label = operation.replace("-", "")
-            box_number = fancy_hash(label)
-            self.remove(box_number, label)
-
-    def remove(self, box: int, label: str):
-        self.boxes[box].remove(label)
-
-    def put(self, box: int, label: str, focal_len: int):
-        self.boxes[box].put(label, focal_len)
+            box = fancy_hash(label)
+            self.boxes[box].remove(label)
 
     def focusing_power(self):
         return sum([box.focusing_power() for box in self.boxes])
