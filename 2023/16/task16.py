@@ -37,16 +37,16 @@ def travel_light(matrix, start_pos=(0, 0, RIGHT)):
         r, c = r + dir[0], c + dir[1]
         if not are_in_bounds(matrix, r, c):
             continue
+        # Only energize if that the first beam in any direction
         energized += 1 if (r, c) not in visited else 0
 
         next_dirs = get_next_dirs(matrix[r][c], dir)
         cell_dirs_list = visited[(r, c)]
         for next_d in next_dirs:
-            # Only energize if that the first beam in any direction
             if next_d not in cell_dirs_list:
-                cell_dirs_list.append(next_d)
                 # Start beam
                 queue.append((r, c, next_d))
+                cell_dirs_list.append(next_d)
     return energized
 
 def get_next_dirs(char, dir):
