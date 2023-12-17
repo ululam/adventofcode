@@ -1,78 +1,64 @@
-from collections import deque
-import sys
+import heapq
+from collections import defaultdict
 
-sys.setrecursionlimit(20_000)
-
-
-UP, DOWN, LEFT, RIGHT = (-1, 0, "up"), (1, 0, "down"), (0, -1, "left"), (0, 1, "right")
+UP, DOWN, LEFT, RIGHT = (-1, 0, "U"), (1, 0, "D"), (0, -1, "L"), (0, 1, "R")
 ALL = [UP, DOWN, LEFT, RIGHT]
 
-def find_path(matrix):
-    visited = {}
-    min_heat = [float("inf")]
-
-    def bfs(r, c, path, heat):
-        if heat > 37148:
-            return
-        key = f"{r}_{c}"
-        # if came_with_limitation(path):         # We need to distinguish when next direction limitation apply
-        #     limit_dir = path[-1]
-        #     key += f"_{limit_dir}"
-        if key in visited and visited.get(key) < heat:
-            # print(f"Stopping as already seen less heat [{r}, {c}]")
-            return
-        if r == len(matrix) - 1 and c == len(matrix[0]) - 1:
-            if heat < min_heat[0]:
-                min_heat[0] = min(min_heat[0], heat)
-                if min_heat[0] < 107600:
-                    print(F"Min heat now = {min_heat[0]}")
-            return
-        visited[key] = heat
-
-        options = []
-        for next_dir in get_next_dirs(path):
-            # Find greedy next step
-            next_r, next_c = r + next_dir[0], c + next_dir[1]
-            if are_in_bounds(matrix, next_r, next_c):
-                options.append((next_r, next_c, next_dir))
-        for next_r, next_c, next_dir in sorted(options, key=lambda v: matrix[v[0]][v[1]]):
-            path.append(next_dir)
-            heat += int(matrix[next_r][next_c])
-            bfs(next_r, next_c, path, heat)
-            heat -= int(matrix[next_r][next_c])
-            path.pop()
-
-    bfs(0, 0, deque(), 0)
+def find_path_deiksra(matrix):
+    def are_in_bounds(r,c):
+        return 0 <= r < len(matrix) and 0 <= c < len(matrix[0])
+    distances = []
     for r in range(len(matrix)):
-        row = []
-        for c in range(len(matrix[0])):
-            row.append(str(visited.get(f"{r}_{c}", "inf")))
-        print(" ".join(row))
-    return min_heat[0]
+        distances.append([defaultdict(lambda: float('inf')) for _ in range(len(matrix[0]))])
+    # total heat, coordinates, cell_where_came_from, streak_lem
+    # Let's put two first steps.
+    queue = [(matrix[1][0], (1, 0), (1, 0), 1), (matrix[0][1], (0, 1), (0, 1), 1)]
+    while queue:
+        total_heap, (r, c), dir, streak = heapq.heappop(queue)
 
-def get_next_dirs(path):
-    if not path:
-        return ALL  # first cell
-    last_dir = path[-1]
-    options = filter(lambda v: v != counter_dir(last_dir), ALL)
-    if came_with_limitation(path):
-        return filter(lambda v: v != last_dir, options)
-    return options
+        for dr, dc, _ in ALL:
+            neib_r, neib_c = r + dr, c + dc
+            if not are_in_bounds(neib_r, neib_c):
+                continue
 
-def came_with_limitation(path):
-    return len(path) >= 3 and path[-3] == path[-2] == path[-1]
+            # Part 1
+            # new_streak = get_next_streak(dir, (dr, dc), streak)
+            # if not new_streak or new_streak > 3:
+            #     continue  # We cannot move here
+            # Part 2
+            new_streak = get_next_streak_part_2(dir, (dr, dc), streak)
+            if not new_streak or new_streak > 10:
+                continue  # We cannot move here
 
-def counter_dir(dir):
-    if dir == UP: return DOWN
-    if dir == DOWN: return UP
-    if dir == LEFT: return RIGHT
-    if dir == RIGHT: return LEFT
+            new_total_heap = total_heap + matrix[neib_r][neib_c]
+            existing_total_heap = distances[neib_r][neib_c][dr, dc, new_streak]
+            if new_total_heap < existing_total_heap:
+                distances[neib_r][neib_c][dr, dc, new_streak] = new_total_heap
+                heapq.heappush(queue, (new_total_heap, (neib_r, neib_c), (dr, dc), new_streak))
 
-def are_in_bounds(matrix, r, c):
-    return 0 <= r < len(matrix) and 0 <= c < len(matrix[0])
+    return min(distances[len(matrix) - 1][len(matrix[0]) - 1].values())
+
+def get_next_streak(dir, new_dir, streak):
+    if dir[0] == -new_dir[0] and dir[1] == -new_dir[1]:
+        return None     # We cannot move back
+    if dir == new_dir:
+        return streak + 1
+    return 1
+
+def get_next_streak_part_2(dir, new_dir, streak):
+    if dir[0] == -new_dir[0] and dir[1] == -new_dir[1]:
+        return None     # We cannot move back
+    if dir == new_dir:
+        return streak + 1       # Same dir, always ok. Bounds check is outside
+    if streak >= 4:
+        return 1
+    return None
 
 # with open("test17.txt") as f:
 with open("17.input") as f:
-    answer = find_path([list(line.strip()) for line in f])
+    input = [list(line.strip()) for line in f]
+    for row in input:
+        for c in range(len(input[0])):
+            row[c] = int(row[c])
+    answer = find_path_deiksra(input)
     print(answer)
-
