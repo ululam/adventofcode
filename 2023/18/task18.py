@@ -3,7 +3,7 @@ ALL = [UP, DOWN, LEFT, RIGHT]
 DIR_MAP = {t[2]: (t[0], t[1]) for t in ALL}
 
 def dig(input: list[list[str]]):
-    perimenter_len, area = 0, 0
+    perimeter, area = 0, 0
     r, c = 0, 0
     for instruction in input:
         direct, count = get_line_instruction(instruction)
@@ -13,10 +13,10 @@ def dig(input: list[list[str]]):
         r_next, c_next = r + dr * count, c + dc * count
         area += (r + r_next ) * (c - c_next)
         r, c = r_next, c_next
-        perimenter_len += count
+        perimeter += count
 
     # Pick's theorem on top of Gauss area formula
-    return ((area + perimenter_len) >> 1) + 1
+    return ((area + perimeter) >> 1) + 1
 
 
 def get_line_instruction(s):
