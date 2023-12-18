@@ -64,8 +64,8 @@ def find_internal_point(field):
         r >>= 1
         row = field[r]
         borders = 0
-        for i in range(len(row) - 1):
-            if row[i] == DIGGED and row[i+1] != DIGGED:
+        for i in range(len(row)):
+            if row[i] == DIGGED and (i == len(row) - 1 or row[i+1] != DIGGED):
                 if borders % 2 == 1:
                     return (r, potential_c)
                 borders += 1
