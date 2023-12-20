@@ -91,16 +91,18 @@ def read_rules(f) -> dict[str, dict[str, object]]:
             break
         name, rules = line.strip().split("{")
         rules_list = []
-        prev_rules_in_line = []
+        prev_rules_conditions = []
         for rule_body in rules.replace("}", "").split(","):
-            extra_cond = " and ".join([r.condition for r in prev_rules_in_line])
+            # Create fake rules inline just to call inverse()
+            extra_cond = " and ".join([RulePart2("", cond + ":A").inverse().condition for cond in prev_rules_conditions])
+            initial_rule_body = rule_body
             if extra_cond:
                 if ":" in rule_body:
                     rule_body = extra_cond + " and " + rule_body
                 else:
                     rule_body = extra_cond + ":" + rule_body
             a_rule = RulePart2(name, rule_body)
-            prev_rules_in_line = [a_rule.inverse()]
+            prev_rules_conditions.append(RulePart2("", initial_rule_body).condition)
             rules_list.append(a_rule)
         res[name] = rules_list
     return res
@@ -169,18 +171,19 @@ def build_range(conditions: str):
         if threshold.startswith("="):
             threshold = threshold.replace("=", "")
             addon = -1 if more_than else 1
+            # addon = 0 if more_than else 1
         threshold = int(threshold) + addon
         if more_than:
-            range1 = (threshold+1, 4000)
+            range1 = (threshold + 1, 4000)
         else:
-            range1 = (1, threshold)
+            range1 = (1, threshold - 1)
         if range4[var][0] > range1[1] or range1[0] > range4[var][1]:
             range4[var] = (-1, 0)
         range4[var] = (max(range4[var][0], range1[0]), min(range4[var][1], range1[1]))
     return range4
 
-with open("test19.txt") as f:
-# with open("19.input") as f:
+# with open("test19.txt") as f:
+with open("19.input") as f:
     rules = read_rules(f)
     # Part 1
     # print(process(rules, read_input(f)))
@@ -202,7 +205,7 @@ with open("test19.txt") as f:
             chain_power *= r[1] - r[0] + 1
         for i in range(count, 4):
             chain_power *= 4000
-        # print(f"Adding: {chain_power}")
+        print(f"Adding: {chain_power}")
         all_power += chain_power
     print(all_power)
 
