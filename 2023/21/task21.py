@@ -24,6 +24,33 @@ def count_stars(matrix):
                 cnt += 1
     return cnt
 
+def solve_eq_system():
+    from sympy import symbols, Eq, solve
+
+    a, b, c, t = symbols('a b c t')
+
+    # Given equation
+    L = a * t ** 2 + b * t + c
+    given_L = 3799
+    given_t = 65
+    given_L_2 = 34047
+    given_t_2 = 196
+    given_L_3 = 94475
+    given_t_3 = 327
+
+    equation = Eq(L.subs(t, given_t), given_L)
+    equation_2 = Eq(L.subs(t, given_t_2), given_L_2)
+    equation_3 = Eq(L.subs(t, given_t_3), given_L_3)
+
+    solution = solve((equation, equation_2, equation_3), (a, b, c))
+
+    new_t = 26501365
+
+    new_L = L.subs([(a, solution[a]), (b, solution[b]), (c, solution[c]), (t, new_t)])
+
+    new_L_value = new_L.evalf()  # Evaluate to a numerical value
+    print(new_L_value)
+
 # with open("test21.txt") as f:
 with open("21.input") as f:
     input_ro = []
@@ -41,7 +68,19 @@ with open("21.input") as f:
     cells = [(s_row, s_col)]
     matrices_repeated_iself = set()
     seen_states = set()
-    for i in range(26501365):
+    '''
+        Ax2 + Bx + C = L
+        ----------------
+        4225*A + 65*B + C = 3799
+        196*196*A + 196*B + C = 34047
+        327*327*A + 327*B + C = 94475
+        ----------------
+
+        I lazily use ChatGPT to
+    '''
+    for i in range(1, 65):       # 3799
+    # for i in range(1, 65+131):     # 34047
+    # for i in range(1, 65 + 2 * 131):  # 94475
         if i % 1_00 == 0:
             print(f"At step {i}")
         next_cells = set()
@@ -66,11 +105,15 @@ with open("21.input") as f:
                 continue
             h = f"{m_coord}_{_hash(m)}"
             if h in seen_states:
-                print(f"Same state at iteration {i} for {m_coord} with count {count_stars(m)}. Total matrices: {len(matrices)}")
                 matrices_repeated_iself.add(m_coord)
+                print(f"Same state at iteration {i} for {m_coord} with count {count_stars(m)}")
+                print(f"\tTotal still matrices {len(matrices_repeated_iself)}, total matrices: {len(matrices)}, live: {len(matrices) - len(matrices_repeated_iself)}")
                 # for row in input:
                 #     print("".join(row))
                 # print("------------------------------------------------------------------")
             else:
                 seen_states.add(h)
     print(len(cells))
+
+    solve_eq_system()
+
