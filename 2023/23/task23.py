@@ -1,12 +1,10 @@
 import sys
-from collections import defaultdict
-
-sys.setrecursionlimit(100_000)
+sys.setrecursionlimit(10_000)
 
 UP, DOWN, LEFT, RIGHT = (-1, 0), (1, 0), (0, -1), (0, 1)
 ALL = [UP, LEFT, DOWN, RIGHT]
 VISITED = "*"
-WALL = "█"
+WALL = "#"
 
 def are_in_bounds(matrix, r, c):
     return 0 <= r < len(matrix) and 0 <= c < len(matrix[0])
@@ -30,7 +28,6 @@ def find_longest_hike(field):
     def walk(r, c, steps):
         if r == len(field) - 1 and c == len(field[0]) - 2:
             if steps > res[0]:
-                print(f"Found new max = {steps}")
                 res[0] = steps
             return
         for dr, dc in ALL:
@@ -105,7 +102,7 @@ def find_longest_distance_in_graph(g):
 # with open("test23.txt") as f:
 with open("23.input") as f:
     input = [list(l.strip()) for l in f]
-    # p = find_longest_hike(input)
+    p = find_longest_hike(input)
+    print(p)
     g = build_graph(input)
-
     print(find_longest_distance_in_graph(g))
